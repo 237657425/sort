@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="120 seconds" debug="false">
+	<appender name="FILEOUT"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender -->
+		<Encoding>UTF-8</Encoding>  
+		<File>/home/app/scheduler/logs/scheduler.log</File>
+		<encoder>
+			<pattern>[%t] %d{yyyy-MM-dd HH:mm:ss} [%5p] %c:%L - %m%n</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>256MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<FileNamePattern>${log.base}-%d{yyyy-MM-dd}-%i.log.gz
+			</FileNamePattern>
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+	</appender>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>[%t] %d{yyyy-MM-dd HH:mm:ss} [%5p] %c:%L - %m%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>192.168.1.115:9250</destination>
+
+        <!-- encoder is required -->
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>
+
+	<logger name="com.springmvc.test.dao" level="debug" />
+	
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILEOUT" />
+		<appender-ref ref="LOGSTASH" />  
+	</root>
+	
+</configuration>
